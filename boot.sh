@@ -15,7 +15,7 @@ echo "Creating user..." >> $log
 adduser --disabled-password --gecos '' $user >> $log
 
 echo "Writing wsgi.ini..." >> $log
-cat << EOF | tee -a $diskroot/wsgi.ini >> $log
+cat << EOF | tee $diskroot/wsgi.ini >> $log
 [uwsgi]
 uid = $user
 gid = $user
@@ -35,7 +35,7 @@ daemonize = $log
 EOF
 
 echo "Writing nginx.conf..." >> $log
-cat << EOF | tee -a $diskroot/nginx.conf >> $log
+cat << EOF | tee $diskroot/nginx.conf >> $log
 user $user $user;
 worker_processes 1;
 events {
@@ -64,8 +64,8 @@ http {
         server_name $servername;
 
         ssl on;
-        ssl_certificate $sslroot/cert.crt;
-        ssl_certificate_key $sslroot/cert.key;
+        ssl_certificate $sslroot/tls.crt;
+        ssl_certificate_key $sslroot/tls.key;
 
         ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
         ssl_prefer_server_ciphers on;
@@ -95,7 +95,7 @@ http {
 EOF
 
 echo "Preparing django..." >> $log
-python3 $diskroot/manage.py collectstatic
+python3 $diskroot/manage.py collectstatic --clear
 python3 $diskroot/manage.py migrate
 
 echo "Starting uwsgi..." >> $log
