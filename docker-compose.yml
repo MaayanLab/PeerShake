@@ -2,7 +2,7 @@ version: '2'
 services:
   peershake:
     build: .
-    image: maayanlab/peershake:1.0
+    image: maayanlab/peershake:1.2
     ports:
       - 80:80
       - 443:443
@@ -12,6 +12,7 @@ services:
       SECRET_KEY: 'secret'
       DEBUG: 'false'
       DATABASE_CONFIG: '{ "ENGINE": "django.db.backends.postgresql", "NAME": "peershake", "USER": "peershake", "PASSWORD": "peershake", "HOST": "postgres", "PORT": "5432" }'
+      SSL: '1'
     volumes:
       - ./ssl:/ssl
 

@@ -19,6 +19,7 @@ ENV DEBUG 'false'
 ENV BASE_URL '/peershake'
 ENV SECRET_KEY 'secret'
 ENV DATABASE_CONFIG '{"ENGINE": "django.db.backends.sqlite3", "NAME": "db.sqlite3"}'
+ENV SSL ''
 
 VOLUME /ssl
 EXPOSE 80

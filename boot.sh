@@ -35,6 +35,7 @@ daemonize = $log
 EOF
 
 echo "Writing nginx.conf..." >> $log
+
 cat << EOF | tee $diskroot/nginx.conf >> $log
 user $user $user;
 worker_processes 1;
@@ -54,11 +55,25 @@ http {
                       text/javascript
                       application/x-javascript
                       application/atom+xml;
+EOF
+
+if [ -z "$SSL" ]; then
+
+cat << EOF | tee -a $diskroot/nginx.conf >> $log
+    server {
+        listen          80;
+        server_name     $servername;
+EOF
+
+else
+
+cat << EOF | tee -a $diskroot/nginx.conf >> $log
     server {
         listen          80;
         server_name     $servername;
         rewrite ^/(.*)  https://\$host/\$1 permanent;
     }
+
     server {
         listen 443;
         server_name $servername;
@@ -70,7 +85,11 @@ http {
         ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
         ssl_prefer_server_ciphers on;
         ssl_ciphers 'EECDH+AESGCM:EDH+AESGCM:AES256+EECDH:AES256+EDH';
+EOF
 
+fi
+
+cat << EOF | tee -a $diskroot/nginx.conf >> $log
         include /etc/nginx/mime.types;
         charset utf-8;
         client_max_body_size 20M;
